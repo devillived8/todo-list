@@ -5,6 +5,7 @@
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    min-height: 60px;
 }
 
 .todo-app__task {
@@ -17,6 +18,7 @@
     transition: transform 0.2s;
     user-select: none;
     cursor: pointer;
+    touch-action: manipulation;
 }
 
 .todo-app__task:hover {

@@ -13,3 +13,9 @@
 .gu-over {
     background-color: rgba(0, 123, 255, 0.05) !important;
 }
+
+[draggable="true"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
