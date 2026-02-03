@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🔄 Инициализация Dragula и LocalStorage...');
     
     const STORAGE_KEY = 'todo-app-state';
+    let isDragging = false;
+    let scrollSpeed = 0.5; // Скорость синхронного скролла (экспериментируй)
     
     // 1. Функция сохранения состояния
     function saveState() {
@@ -26,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Сохраняем в LocalStorage (перезаписываем полностью)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         console.log('💾 Состояние сохранено');
     }
@@ -43,16 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const state = JSON.parse(saved);
             console.log('📂 Загружаем сохранённое состояние');
             
-            // Очищаем ВСЕ колонки перед загрузкой
             document.querySelectorAll('.todo-app__tasks-list').forEach(list => {
                 list.innerHTML = '';
             });
             
-            // Восстанавливаем задачи в колонки
             Object.keys(state).forEach(status => {
                 const list = document.querySelector(`[data-status-target="${status}"]`);
                 if (list && Array.isArray(state[status])) {
-                    // Добавляем сохранённые задачи
                     state[status].forEach(taskText => {
                         if (taskText && taskText.trim() !== '') {
                             const task = document.createElement('li');
@@ -66,43 +64,92 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('❌ Ошибка загрузки:', error);
-            localStorage.removeItem(STORAGE_KEY); // Очищаем битые данные
+            localStorage.removeItem(STORAGE_KEY);
         }
     }
     
-    // 3. Инициализация Dragula
+    // 3. Инициализация Dragula с правильными настройками
     const taskLists = document.querySelectorAll('.todo-app__tasks-list');
-    const drake = dragula(Array.from(taskLists));
+    const drake = dragula(Array.from(taskLists), {
+        moves: function(el, source, handle, sibling) {
+            return el.classList.contains('todo-app__task');
+        }
+    });
     
     // 4. События Dragula
-    drake.on('drag', function(el) {
+    drake.on('drag', function(el, source) {
+        isDragging = true;
         el.style.opacity = '0.5';
+        console.log('Начали перетаскивание');
     });
     
     drake.on('dragend', function(el) {
+        isDragging = false;
         el.style.opacity = '1';
+        console.log('Закончили перетаскивание');
     });
     
     drake.on('drop', function(el, target, source, sibling) {
         console.log('✅ Задача перемещена!');
         
-        // Визуальный эффект
         el.style.backgroundColor = '#e8f5e8';
         setTimeout(() => {
             el.style.backgroundColor = '';
         }, 500);
         
-        // Важно: Dragula уже физически переместил элемент между DOM-узлами
-        // Теперь мы просто сохраняем ТЕКУЩЕЕ состояние всех колонок
-        
-        // Сохраняем полное состояние
         saveState();
     });
     
-    // 5. Сохранение перед закрытием страницы
+    // 5. СИНХРОНИЗИРУЕМ СКРОЛЛ С ПЕРЕТАСКИВАНИЕМ
+    // Когда перетаскиваем элемент вниз - страница тоже скроллится вниз
+    document.addEventListener('touchmove', function(e) {
+        if (isDragging && e.touches.length === 1) {
+            const touch = e.touches[0];
+            const windowHeight = window.innerHeight;
+            
+            // Определяем зоны для автоскролла
+            const scrollZoneTop = 100;    // Зона вверху экрана (px от верха)
+            const scrollZoneBottom = 100; // Зона внизу экрана (px от низа)
+            
+            // Скроллим ВНИЗ если палец в нижней зоне
+            if (touch.clientY > windowHeight - scrollZoneBottom) {
+                // Экран опускается ВНИЗ
+                window.scrollBy({
+                    top: 10 * scrollSpeed,
+                    behavior: 'smooth'
+                });
+            }
+            // Скроллим ВВЕРХ если палец в верхней зоне
+            else if (touch.clientY < scrollZoneTop) {
+                // Экран поднимается ВВЕРХ
+                window.scrollBy({
+                    top: -10 * scrollSpeed,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    }, { passive: true }); // passive: true - не блокируем скролл!
+    
+    // 6. Альтернативный вариант: просто разрешаем естественный скролл
+    // Убери все блокировки скролла и используй только это:
+    document.querySelectorAll('.todo-app__task').forEach(task => {
+        task.addEventListener('touchstart', function() {
+            // Временно разрешаем скролл
+            this.style.touchAction = 'pan-y';
+        });
+        
+        task.addEventListener('touchend', function() {
+            // Возвращаем touch-action: none
+            setTimeout(() => {
+                this.style.touchAction = 'none';
+            }, 500);
+        });
+    });
+    
+    // 7. Сохранение перед закрытием страницы
     window.addEventListener('beforeunload', saveState);
     
-    // 6. Загружаем сохранённое состояние
+    // 8. Загружаем сохранённое состояние
     loadState();
     
     console.log('✅ Dragula + LocalStorage готовы к работе!');

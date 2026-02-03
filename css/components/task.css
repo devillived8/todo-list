@@ -6,9 +6,12 @@
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 60px;
+     touch-action: pan-y;
 }
 
 .todo-app__task {
+    touch-action: none; /* Только для задач */
+    user-select: none;
     padding: 12px;
     margin-bottom: 8px;
     background: white;
