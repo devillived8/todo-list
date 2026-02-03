@@ -6,11 +6,11 @@
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 60px;
-     touch-action: pan-y;
+    touch-action: pan-y;
 }
 
 .todo-app__task {
-    touch-action: none; /* Только для задач */
+    touch-action: none;
     user-select: none;
     padding: 12px;
     margin-bottom: 8px;
@@ -27,4 +27,8 @@
 .todo-app__task:hover {
     transform: translateX(5px);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.task__title{
+    border-bottom: 1px solid #4a6fa5;
 }

@@ -1,12 +1,105 @@
-// ========== DRAGULA + LOCALSTORAGE ==========
+// ========== ВСЁ В ОДНОМ ФАЙЛЕ ==========
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔄 Инициализация Dragula и LocalStorage...');
+    console.log('🚀 Запуск приложения...');
     
     const STORAGE_KEY = 'todo-app-state';
     let isDragging = false;
-    let scrollSpeed = 0.5; // Скорость синхронного скролла (экспериментируй)
     
-    // 1. Функция сохранения состояния
+    // ===== 1. МОДАЛЬНОЕ ОКНО =====
+    function initModal() {
+        const modal = document.querySelector('.modal');
+        const openBtn = document.querySelector('.todo-app__add');
+        const form = document.querySelector('.modal__form');
+        
+        if (!modal || !openBtn || !form) {
+            console.warn('⚠️ Элементы модалки не найдены');
+            return;
+        }
+        
+        // Открытие
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('modal--open');
+        });
+        
+        // Закрытие по overlay
+        modal.querySelector('.modal__overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+        
+        // Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('modal--open')) {
+                closeModal();
+            }
+        });
+        
+        // Обработка формы
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = this.querySelector('.modal__input').value.trim();
+            const description = this.querySelector('.modal__textarea')?.value.trim() || '';
+            
+            if (!title) {
+                alert('Введите название задачи');
+                return;
+            }
+            
+            // Создаём задачу
+            createTask(title, description);
+            
+            // Закрываем и чистим
+            closeModal();
+            this.reset();
+        });
+        
+        function closeModal() {
+            modal.classList.remove('modal--open');
+        }
+    }
+    
+    // ===== 2. СОЗДАНИЕ ЗАДАЧИ =====
+    function createTask(title, description = '', status = 'in-progress') {
+        const task = document.createElement('li');
+        task.className = 'todo-app__task';
+        task.draggable = true;
+        
+        // Безопасное создание HTML
+        const titleEl = document.createElement('h4');
+        titleEl.className = 'task__title';
+        titleEl.textContent = title;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'task__content';
+        contentDiv.appendChild(titleEl);
+        
+        if (description) {
+            const descEl = document.createElement('p');
+            descEl.className = 'task__description';
+            descEl.textContent = description;
+            contentDiv.appendChild(descEl);
+        }
+        
+        task.appendChild(contentDiv);
+        
+        // Добавляем в нужную колонку
+        const column = document.querySelector(`[data-status-target="${status}"]`);
+        if (column) {
+            column.appendChild(task);
+        } else {
+            // По умолчанию в "Выполняются"
+            document.querySelector('[data-status-target="in-progress"]').appendChild(task);
+        }
+        
+        // Сохраняем состояние
+        saveState();
+        
+        return task;
+    }
+    
+    // ===== 3. СОХРАНЕНИЕ В LOCALSTORAGE =====
     function saveState() {
         const state = {
             completed: [],
@@ -14,13 +107,18 @@ document.addEventListener('DOMContentLoaded', function() {
             postponed: []
         };
         
-        // Собираем задачи из каждой колонки
         document.querySelectorAll('.todo-app__tasks-list').forEach(list => {
             const status = list.dataset.statusTarget;
             const tasks = [];
             
             list.querySelectorAll('.todo-app__task').forEach(task => {
-                tasks.push(task.textContent.trim());
+                const title = task.querySelector('.task__title')?.textContent || '';
+                const description = task.querySelector('.task__description')?.textContent || '';
+                
+                tasks.push({
+                    title: title.trim(),
+                    description: description.trim()
+                });
             });
             
             if (state[status] !== undefined) {
@@ -32,31 +130,26 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('💾 Состояние сохранено');
     }
     
-    // 2. Функция загрузки состояния
+    // ===== 4. ЗАГРУЗКА ИЗ LOCALSTORAGE =====
     function loadState() {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if (!saved) {
-                console.log('📂 Нет сохранённых данных');
-                return;
-            }
+            if (!saved) return;
             
             const state = JSON.parse(saved);
-            console.log('📂 Загружаем сохранённое состояние');
             
+            // Очищаем колонки
             document.querySelectorAll('.todo-app__tasks-list').forEach(list => {
                 list.innerHTML = '';
             });
             
+            // Восстанавливаем задачи
             Object.keys(state).forEach(status => {
                 const list = document.querySelector(`[data-status-target="${status}"]`);
                 if (list && Array.isArray(state[status])) {
-                    state[status].forEach(taskText => {
-                        if (taskText && taskText.trim() !== '') {
-                            const task = document.createElement('li');
-                            task.className = 'todo-app__task';
-                            task.textContent = taskText;
-                            list.appendChild(task);
+                    state[status].forEach(taskData => {
+                        if (taskData.title && taskData.title.trim() !== '') {
+                            createTask(taskData.title, taskData.description, status);
                         }
                     });
                 }
@@ -68,89 +161,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 3. Инициализация Dragula с правильными настройками
-    const taskLists = document.querySelectorAll('.todo-app__tasks-list');
-    const drake = dragula(Array.from(taskLists), {
-        moves: function(el, source, handle, sibling) {
-            return el.classList.contains('todo-app__task');
-        }
-    });
-    
-    // 4. События Dragula
-    drake.on('drag', function(el, source) {
-        isDragging = true;
-        el.style.opacity = '0.5';
-        console.log('Начали перетаскивание');
-    });
-    
-    drake.on('dragend', function(el) {
-        isDragging = false;
-        el.style.opacity = '1';
-        console.log('Закончили перетаскивание');
-    });
-    
-    drake.on('drop', function(el, target, source, sibling) {
-        console.log('✅ Задача перемещена!');
-        
-        el.style.backgroundColor = '#e8f5e8';
-        setTimeout(() => {
-            el.style.backgroundColor = '';
-        }, 500);
-        
-        saveState();
-    });
-    
-    // 5. СИНХРОНИЗИРУЕМ СКРОЛЛ С ПЕРЕТАСКИВАНИЕМ
-    // Когда перетаскиваем элемент вниз - страница тоже скроллится вниз
-    document.addEventListener('touchmove', function(e) {
-        if (isDragging && e.touches.length === 1) {
-            const touch = e.touches[0];
-            const windowHeight = window.innerHeight;
-            
-            // Определяем зоны для автоскролла
-            const scrollZoneTop = 100;    // Зона вверху экрана (px от верха)
-            const scrollZoneBottom = 100; // Зона внизу экрана (px от низа)
-            
-            // Скроллим ВНИЗ если палец в нижней зоне
-            if (touch.clientY > windowHeight - scrollZoneBottom) {
-                // Экран опускается ВНИЗ
-                window.scrollBy({
-                    top: 10 * scrollSpeed,
-                    behavior: 'smooth'
-                });
+    // ===== 5. DRAGULA (перетаскивание) =====
+    function initDragula() {
+        const taskLists = document.querySelectorAll('.todo-app__tasks-list');
+        const drake = dragula(Array.from(taskLists), {
+            moves: function(el, source, handle, sibling) {
+                return el.classList.contains('todo-app__task');
             }
-            // Скроллим ВВЕРХ если палец в верхней зоне
-            else if (touch.clientY < scrollZoneTop) {
-                // Экран поднимается ВВЕРХ
-                window.scrollBy({
-                    top: -10 * scrollSpeed,
-                    behavior: 'smooth'
-                });
-            }
-        }
-    }, { passive: true }); // passive: true - не блокируем скролл!
-    
-    // 6. Альтернативный вариант: просто разрешаем естественный скролл
-    // Убери все блокировки скролла и используй только это:
-    document.querySelectorAll('.todo-app__task').forEach(task => {
-        task.addEventListener('touchstart', function() {
-            // Временно разрешаем скролл
-            this.style.touchAction = 'pan-y';
         });
         
-        task.addEventListener('touchend', function() {
-            // Возвращаем touch-action: none
-            setTimeout(() => {
-                this.style.touchAction = 'none';
-            }, 500);
+        drake.on('drag', function(el) {
+            isDragging = true;
+            el.style.opacity = '0.5';
         });
-    });
+        
+        drake.on('dragend', function(el) {
+            isDragging = false;
+            el.style.opacity = '1';
+        });
+        
+        drake.on('drop', function() {
+            saveState(); // Сохраняем после перетаскивания
+        });
+        
+        // Автоскролл при перетаскивании
+        document.addEventListener('touchmove', function(e) {
+            if (isDragging && e.touches.length === 1) {
+                const touch = e.touches[0];
+                const windowHeight = window.innerHeight;
+                const scrollZone = 100;
+                
+                if (touch.clientY > windowHeight - scrollZone) {
+                    window.scrollBy({ top: 10, behavior: 'smooth' });
+                } else if (touch.clientY < scrollZone) {
+                    window.scrollBy({ top: -10, behavior: 'smooth' });
+                }
+            }
+        }, { passive: true });
+    }
     
-    // 7. Сохранение перед закрытием страницы
+    // ===== 6. КНОПКИ УПРАВЛЕНИЯ =====
+    function initControlButtons() {
+        const buttons = document.querySelectorAll('.todo-app__delete, .todo-app__edit');
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('Будет реализовано позже!');
+            });
+        });
+    }
+    
+    // ===== 7. ЗАПУСК ВСЕГО =====
+    initModal();
+    loadState();
+    initDragula();
+    initControlButtons();
+    
     window.addEventListener('beforeunload', saveState);
     
-    // 8. Загружаем сохранённое состояние
-    loadState();
-    
-    console.log('✅ Dragula + LocalStorage готовы к работе!');
+    console.log('✅ Приложение запущено!');
 });

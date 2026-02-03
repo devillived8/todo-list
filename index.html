@@ -12,6 +12,34 @@
 </head>
 
 <body>
+<div class="modal">
+    <div class="modal__overlay"></div>
+    <div class="modal__window">
+        <form class="modal__form">
+            <input type="text" 
+                   class="modal__input modal__input--title" 
+                   placeholder="Название задачи">
+            
+            <textarea class="modal__textarea modal__textarea--description" 
+                      placeholder="Описание задачи"
+                      rows="4"></textarea>
+            
+            <fieldset class="modal__fieldset">
+                <legend class="modal__legend">Добавить дату к задаче?</legend>
+                <label class="modal__checkbox-label">
+                    <input type="checkbox" class="modal__checkbox">
+                    <span class="modal__checkbox-custom"></span>
+                    Да, добавить дату
+                </label>
+            </fieldset>
+            
+            <button class="modal__button modal__button--submit" type="submit">
+                Добавить задачу
+            </button>
+        </form>
+    </div>
+</div>
+    </div>
     <header class="header">
         <h1 class="header__title">Адаптивный to-do list</h1>
     </header>
@@ -26,18 +54,7 @@
                 <div class="todo-app__status">
                     <h2 class="todo-app__title todo-app__title--completed">Выполненные</h2>
                     <ul class="todo-app__tasks-list" data-status-target="completed">
-                        <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">пваып js</li>
-                        <li class="todo-app__task">Вы234ть js</li>
-                                                <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">пваып js</li>
-                        <li class="todo-app__task">Вы234ть js</li>
-                                                <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">Выучить js</li>
-                        <li class="todo-app__task">пваып js</li>
-                        <li class="todo-app__task">Вы234ть js</li>
+
                     </ul>
                 </div>
                 <div class="todo-app__status">

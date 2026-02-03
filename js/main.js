@@ -1,4 +1,9 @@
-let btns = document.querySelectorAll(".todo-app__add, .todo-app__delete, .todo-app__edit");
+document.addEventListener('DOMContentLoaded', function() {
+    initModal();
+
+
+
+    let btns = document.querySelectorAll(".todo-app__delete, .todo-app__edit");
 
 
 btns.forEach(btn => {
@@ -8,3 +13,5 @@ btns.forEach(btn => {
 
     })
 })
+
+});

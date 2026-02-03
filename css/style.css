@@ -1,15 +1,13 @@
-/* ПРАВИЛЬНЫЙ ПОРЯДОК: */
-
-/* 1. Сброс и база */
 @import 'reset.css';
 @import './utils/variables.css';
 @import 'base.css';
 
-/* 2. Компоненты (мобильная версия) */
+/* 2. Компоненты */
 @import 'components/todo-app.css';
 @import 'components/button.css';
 @import 'components/column.css';
 @import 'components/task.css';
+@import 'components/modal.css';
 
 /* 3. Макеты */
 @import 'layouts/header.css';
@@ -18,9 +16,9 @@
 @import 'layouts/dashboard.css';
 
 
-/* 5. МЕДИА-ЗАПРОСЫ (самые последние!) */
+
 @import './utils/media-queries.css';
 
-/* 6. Dragula (после всего) */
+
 @import './utils/dragula.css';
 
