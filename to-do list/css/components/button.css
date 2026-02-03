@@ -1,0 +1,21 @@
+.todo-app__control-panel button {
+    padding: 10px 20px;
+    height: auto;
+    border: 1px solid #666;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 1rem;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.todo-app__control-panel button:hover {
+    background-color: #a9ff624b;
+    transform: translateY(-1px);
+}
+
+.todo-app__control-panel button:active {
+    transform: translateY(0);
+}

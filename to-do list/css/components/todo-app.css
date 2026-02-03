@@ -1,0 +1,12 @@
+.todo-app {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 700px;
+    height: auto;
+    background-color: #9b9b9b;
+    margin: 0 auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+}

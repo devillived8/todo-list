@@ -1,0 +1,11 @@
+.todo-app__control-panel {
+    height: 60px;
+    min-height: 60px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+    flex-shrink: 0;
+}

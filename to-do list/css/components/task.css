@@ -1,0 +1,25 @@
+.todo-app__tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.todo-app__task {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 6px;
+    border-left: 4px solid #666;
+    text-align: left;
+    transition: transform 0.2s;
+    user-select: none;
+    cursor: pointer;
+}
+
+.todo-app__task:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

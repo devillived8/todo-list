@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>to-do list</title>
+    <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <h1 class="header__title">Адаптивный to-do list</h1>
+    </header>
+    <main class="main">
+        <div class="todo-app">
+            <div class="todo-app__control-panel">
+                <button class="todo-app__add">➕ Добавить задачу</button>
+                <button class="todo-app__delete">🗑 Удалить</button>
+                <button class="todo-app__edit">✎ Изменить</button>
+            </div>
+            <div class="todo-app__dashboard">
+                <div class="todo-app__status">
+                    <h2 class="todo-app__title todo-app__title--completed">Выполненные</h2>
+                    <ul class="todo-app__tasks-list" data-status-target="completed">
+                        <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">пваып js</li>
+                        <li class="todo-app__task">Вы234ть js</li>
+                                                <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">пваып js</li>
+                        <li class="todo-app__task">Вы234ть js</li>
+                                                <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">Выучить js</li>
+                        <li class="todo-app__task">пваып js</li>
+                        <li class="todo-app__task">Вы234ть js</li>
+                    </ul>
+                </div>
+                <div class="todo-app__status">
+                    <h2 class="todo-app__title todo-app__title--in-progress">Выполняются</h2>
+                    <ul class="todo-app__tasks-list" data-status-target="in-progress">
+
+                    </ul>
+                </div>
+                <div class="todo-app__status">
+                    <h2 class="todo-app__title todo-app__title--postponed">Отложенные</h2>
+                    <ul class="todo-app__tasks-list" data-status-target="postponed">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer__title">Сделано devillived8</div>
+        <a href="https://t.me/devillived8" target="_blank" class="footer__contact">
+            <img src="./img/tg.webp" alt="Иконка тг" class="footer__image">
+        </a>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/dragula-setup.js"></script>
+</body>
+
+</html>
