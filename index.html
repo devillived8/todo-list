@@ -12,6 +12,58 @@
 </head>
 
 <body>
+
+<div class="modal modal--edit" style="display: none;">
+                <div class="modal__overlay"></div>
+                <div class="modal__window">
+                    <form class="modal__form">
+                        <input type="text" 
+                               class="modal__input modal__input--title" 
+                               placeholder="Название задачи">
+                        
+                        <textarea class="modal__textarea modal__textarea--description" 
+                                  placeholder="Описание задачи"
+                                  rows="4"></textarea>
+                        
+                        <fieldset class="modal__fieldset">
+                            <legend class="modal__legend">Дата задачи</legend>
+                            <label class="modal__checkbox-label">
+                                <input type="checkbox" class="modal__checkbox modal__checkbox--date">
+                                <span class="modal__checkbox-custom"></span>
+                                Сохранить текущую дату
+                            </label>
+                        </fieldset>
+                        
+                        <div class="modal__buttons">
+                            <button class="modal__button modal__button--cancel" type="button">
+                                Отмена
+                            </button>
+                            <button class="modal__button modal__button--save" type="submit">
+                                Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+    <!-- Добавьте этот HTML после основной модалки -->
+<div class="modal modal--confirm" style="display: none;">
+    <div class="modal__overlay"></div>
+    <div class="modal__window">
+        <div class="modal__content">
+            <h3 class="modal__title">Удаление задачи</h3>
+            <p class="modal__text">Вы уверены, что хотите удалить эту задачу?</p>
+            <div class="modal__buttons">
+                <button class="modal__button modal__button--cancel" type="button">
+                    Отмена
+                </button>
+                <button class="modal__button modal__button--delete" type="button">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal">
     <div class="modal__overlay"></div>
     <div class="modal__window">

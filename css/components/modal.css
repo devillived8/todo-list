@@ -33,6 +33,7 @@
     padding: 30px;
 }
 
+/* Стили для модалки добавления задачи */
 .modal__form {
     display: flex;
     flex-direction: column;
@@ -115,14 +116,46 @@
     transform: translate(-50%, -50%);
 }
 
+/* Стили для модалки подтверждения удаления */
+.modal__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal__title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.modal__text {
+    margin: 0;
+    font-size: 1rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.modal__buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Общие стили кнопок для обеих модалок */
 .modal__button {
-    padding: 14px 20px;
+    padding: 14px 24px;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    min-width: 120px;
 }
 
 .modal__button--submit {
@@ -135,7 +168,58 @@
     transform: translateY(-2px);
 }
 
+.modal__button--cancel {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
 
-.modal--open{
-    display: block;
+.modal__button--cancel:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.modal__button--delete {
+    background-color: #ff4444;
+    color: white;
+    border: 2px solid #ff4444;
+}
+
+.modal__button--delete:hover {
+    background-color: #cc0000;
+    border-color: #cc0000;
+    transform: translateY(-2px);
+}
+
+/* Стили для задач */
+.todo-app__task {
+    cursor: default; /* По умолчанию курсор обычный */
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Эффект наведения на задачу для удаления (только в режиме удаления) */
+.delete-mode .todo-app__task:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+    cursor: pointer;
+}
+
+
+/* Дополнительные стили для режима удаления */
+.delete-mode .todo-app__task {
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.delete-mode .todo-app__task:hover {
+    border-color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.05);
+}
+
+.modal__button--save{
+    border: 2px solid #e0e0e0;
+
+}
+
+.modal__button--save:hover{
+    background-color: #e0e0e0;
 }
